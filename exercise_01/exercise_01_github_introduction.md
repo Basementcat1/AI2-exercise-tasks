@@ -172,6 +172,10 @@ git checkout -b experiment
 git add exercise_01/experiment.txt
 git commit -m "Add experiment.txt on experiment branch"
 ```
+3.2 Pushing a new branch:
+```bash
+git push -u origin experiment
+```
 
 4. Switch back to the `main` branch:
 
