@@ -17,7 +17,11 @@ import torch
 #
 # Hint: torch.randn() creates a tensor with random values from a
 # normal distribution. Pass the dimensions as arguments.
-
+batch = torch.randn(2, 3, 224, 224)
+print("Task 1:")
+print(batch.shape)
+print(batch.dtype)
+print(batch.device)
 
 # ===========================================================================
 # Task 2: Device Transfer
