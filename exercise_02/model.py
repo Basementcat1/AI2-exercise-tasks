@@ -24,11 +24,22 @@ class TinyNet(nn.Module):
 #
 #         Each MaxPool2d(2) halves the spatial dimensions.
 #         Input 32×32 → after block 1: 16×16 → after block 2: 8×8.
-        self.features = None
+        # self.features = None
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 8, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Conv2d(8, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            )
 # Step 2: Define self.classifier as nn.Sequential with one Linear layer.
 #         Input size = 16 channels × 8 × 8 = 1024.
 #         Output size = num_classes.
-        self.classifier = None
+        # self.classifier = None
+        self.classifier = nn.Sequential(
+            nn.Linear(16 * 8 * 8, num_classes),
+        )
 #
 # Implementing the forward method:
     def forward(self, x):
@@ -37,7 +48,11 @@ class TinyNet(nn.Module):
 #           x.size(0) keeps the batch dimension, -1 flattens the rest.
 #         Pass through self.classifier.
 #         Return the output.
-        pass
+        # pass
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        return x
 
 
 # ===========================================================================
