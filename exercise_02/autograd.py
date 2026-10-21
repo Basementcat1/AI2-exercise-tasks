@@ -20,7 +20,11 @@ import torch
 # Step 3: Call y.backward() to compute the gradient dy/dx.
 #
 # Step 4: Print x.grad (use .item()) — this holds the computed gradient.
-
+x = torch.tensor(4.0, requires_grad=True)
+y = 3 * x**3 - 2 * x**2 + x
+y.backward()
+print("Task 1")
+print(x.grad.item())
 
 # ===========================================================================
 # Task 2: Manual Gradient Verification
