@@ -60,16 +60,23 @@ class TinyNet(nn.Module):
 # ===========================================================================
 if __name__ == "__main__":
     # Step 1: Instantiate TinyNet with num_classes=5.
-    model = None
+    # model = None
+    model = TinyNet(num_classes=5)
     #
     # Step 2: Create a dummy input tensor of shape (1, 3, 32, 32).
     #         This represents one RGB 32×32 image.
-    dummy_input = None
+    #dummy_input = None
+    dummy_input = torch.randn(1, 3, 32, 32)
     #
     # Step 3: Pass it through the model and print:
     #         - Output shape (expected: [1, 5])
     #         - Raw output values (these are logits, not probabilities)
-    output = None
+    #output = None
+    output = model(dummy_input)
+
+    print("Task 2:")
+    print(f"  Output shape: {output.shape}")
+    print(f"  Output values: {output}")
 
 
     # ===========================================================================
