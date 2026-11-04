@@ -27,7 +27,7 @@ class PlantCNN(nn.Module):
     def __init__(self, num_classes=10, dropout=0.5):
         super().__init__()
 
-        # TODO: Define self.features as nn.Sequential with three conv blocks.
+        # Define self.features as nn.Sequential with three conv blocks.
         #
         #   Each block follows the same pattern:
         #       Conv2d → BatchNorm2d → ReLU → MaxPool2d(2)
