@@ -68,7 +68,8 @@ class PlantWildDataset(Dataset):
 
     def __len__(self):
         # TODO: Return the total number of samples that are stored in self.samples.
-        pass
+        #pass
+        return len(self.samples)
 
     def __getitem__(self, idx):
         """
