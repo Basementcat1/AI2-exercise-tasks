@@ -27,7 +27,7 @@ class PlantCNN(nn.Module):
     def __init__(self, num_classes=10, dropout=0.5):
         super().__init__()
 
-        # TODO: Define self.features as nn.Sequential with three conv blocks.
+        # Define self.features as nn.Sequential with three conv blocks.
         #
         #   Each block follows the same pattern:
         #       Conv2d → BatchNorm2d → ReLU → MaxPool2d(2)
@@ -39,18 +39,42 @@ class PlantCNN(nn.Module):
         #   padding=1 with kernel_size=3 keeps spatial dimensions unchanged
         #   before pooling. Each MaxPool2d(2) halves the dimensions.
         #   BatchNorm2d takes the number of channels as its argument.
-        self.features = None
+        self.features = nn.Sequential(
+            # Block 1
+            nn.Conv2d(3, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2),
 
-        # TODO: Define self.pool as nn.AdaptiveAvgPool2d(1).
+            # Block 2
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+
+            # TODO Block 3
+            # Create the last Block similar to the first two blocks.
+            # Go from 64 input channels to 128 output channels.
+            # kernel_size=3 and padding=1 stay the same
+
+        )
+
+
+        # Define self.pool as nn.AdaptiveAvgPool2d(1).
         #   This reduces any spatial size to 1×1, so the classifier
         #   always receives 128 features regardless of input image size.
-        self.pool = None
+        self.pool = nn.AdaptiveAvgPool2d(1)
 
-        # TODO: Define self.classifier as nn.Sequential:
+        # Define self.classifier as nn.Sequential:
         #   Linear(128, 64) → ReLU → Dropout(dropout) → Linear(64, num_classes)
         #
         #   The input is 128 because self.pool outputs 128 channels × 1 × 1.
-        self.classifier = None
+        self.classifier = nn.Sequential(
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(64, num_classes),
+        )
 
     def forward(self, x):
         """
@@ -62,11 +86,19 @@ class PlantCNN(nn.Module):
         Returns:
             Tensor: Logits of shape (B, num_classes).
         """
-        # TODO: Pass x through features → pool → flatten → classifier.
+        # Pass x through features → pool → flatten → classifier.
         #
         #   The flatten step converts (B, 128, 1, 1) → (B, 128).
         #   Use x.view(x.size(0), -1) to flatten while keeping batch dim.
-        pass
+        x = self.features(x)
+        x = self.pool(x)
+        x = x.view(x.size(0), -1)
+
+        # TODO: finally, pass x through the self.classifier
+        x = None # TODO: remove "None" and add your code here
+
+        # return x as final output
+        return x
 
 
 def count_parameters(model):

@@ -43,24 +43,31 @@ class PlantWildDataset(Dataset):
             if os.path.isdir(os.path.join(root_dir, d))
         ])
 
-        # TODO: class-to-index mapping, and samples list.
-        #
-        #
+        # class-to-index mapping, and samples list.
         #   Step 1: Create a dictionary mapping each class name to its
         #           integer index: {"apple_scab": 0, "tomato_blight": 1, ...}
         #           The indices follow the sorted order from Step 1.
         #           Store as self.class_to_idx.
-        self.class_to_idx = None
-        #
+        self.class_to_idx = {
+            cls_name: idx for idx, cls_name in enumerate(self.classes)
+        }
+        
         #   Step 2: Build a list of (file_path, label) tuples.
         #           For each class folder, loop over its files. For each file,
         #           store the full path and the integer label from Step 1.
         #           Store as self.samples.
-        self.samples = None
+        self.samples = []
+        for cls_name in self.classes:
+            cls_dir = os.path.join(root_dir, cls_name)
+            label = self.class_to_idx[cls_name]
+            for fname in sorted(os.listdir(cls_dir)):
+                filepath = os.path.join(cls_dir, fname)
+                if os.path.isfile(filepath):
+                    self.samples.append((filepath, label))
         
 
     def __len__(self):
-        # TODO: Return the total number of samples.
+        # TODO: Return the total number of samples that are stored in self.samples.
         pass
 
     def __getitem__(self, idx):
@@ -77,9 +84,10 @@ class PlantWildDataset(Dataset):
         #
         #   Step 1: Get the file path and label from self.samples[idx].
         #   Step 2: Open the image with PIL and convert to "RGB".
+        #            hint: image = Image.open(img_path).convert("RGB")
         #           Some images may be grayscale or RGBA — converting
         #           to RGB ensures a consistent 3-channel input.
-        #   Step 3: Apply self.transform if it is not None.
+        #   Step 3: Apply self.transform() if it is not None.
         #   Step 4: Return (image, label).
         pass
 

@@ -227,7 +227,7 @@ Your fork is a snapshot of the course repository at the time you forked it. If t
 1. Add the original repository as a remote (one-time setup):
 
 ```bash
-git remote add upstream <original-repository-url>
+git remote add upstream https://github.com/smAIL-WS/AI2-exercise-tasks.git
 ```
 
 2. Fetch and merge the latest changes:
