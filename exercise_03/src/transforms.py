@@ -93,7 +93,16 @@ def get_val_transforms(image_size):
     #           random variation.
     #   Step 3: ToTensor()
     #   Step 4: Normalize with same ImageNet mean and std.
-    transform = None # TODO: remove "None" and fill in your solution!
+    #transform = None # TODO: remove "None" and fill in your solution!
+    transform = transforms.Compose([
+        transforms.Resize(image_size + 32),
+        transforms.CenterCrop(image_size),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225],
+        ),
+    ])
 
     return transform
 
