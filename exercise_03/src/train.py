@@ -42,31 +42,38 @@ def train_one_epoch(model, dataloader, criterion, optimizer, device, log_interva
     Returns:
         tuple: (average_loss, average_accuracy) for the epoch.
     """
-    # TODO: Set the model to training mode (.train).
+    # Set the model to training mode (model.train()).
     #       This enables dropout and batch normalization updates.
-
+    model.train()
 
     running_loss = 0.0
     running_correct = 0
     total_samples = 0
 
     for batch_idx, (images, labels) in enumerate(dataloader):
-        # TODO: Complete the training step.
+        # TODO: Complete the training step by filling in the individual TODOs.
         #
         #   Step 1: Move images and labels to the device using .to(device).
-        #
-        #   Step 2: Clear old gradients from the optimizer.
-        #
+            images = images.to(device)
+            labels = labels.to(device)
+    
+        #   Step 2: Clear old gradients from the optimizer (hint: .zero_grad()).
+            # TODO: your code here - clear gradients
+    
         #   Step 3: Forward pass — get model outputs from the images.
-        #
-        #   Step 4: Compute the loss using the criterion.
+            outputs = model(images)
+
+        #   Step 4: Compute the loss using the criterion (hint: criterion(outputs, labels)).
         #           Pass (outputs, labels) — not (labels, outputs).
-        #
-        #   Step 5: Backward pass — compute gradients from the loss.
-        #
-        #   Step 6: Update weights with the optimizer.
+            loss = criterion(outputs, labels)
 
+        #   Step 5: Backward pass — compute gradients from the loss (hint: .backward()).
+            # TODO: your code here - backward pass
+    
+        #   Step 6: Update weights with the optimizer (hint: .step()).
+            # TODO: your code here - optimizer step
 
+    
         # --- Accumulate metrics (do not modify) ---
         batch_size = images.size(0)
         running_loss += loss.item() * batch_size
@@ -89,28 +96,34 @@ def validate(model, dataloader, criterion, device):
     Returns:
         tuple: (average_loss, average_accuracy) for the validation set.
     """
-    # TODO: Set the model to evaluation mode (.eval).
+    # Set the model to evaluation mode (.eval).
     #       This disables dropout and freezes batch normalization.
-
+    model.eval()
 
     running_loss = 0.0
     running_correct = 0
     total_samples = 0
 
-    # TODO: Disable gradient computation for the entire validation loop.
+    # Disable gradient computation for the entire validation loop.
     #       Wrap the loop in a torch.no_grad() context manager.
     #       Inside, for each batch:
-    #
-    #   Step 1: Move images and labels to device.
-    #   Step 2: Forward pass only — no backward, no optimizer step.
-    #   Step 3: Compute loss (for logging, not for training).
-    #
-    #   The metric accumulation code below handles the rest.
 
-    for images, labels in dataloader:
+    with torch.no_grad():
+        for images, labels in dataloader:
+            # TODO: Complete the validation step by filling in the individual TODOs.
+            
+            # Step 1: Move images and labels to device.
+            # TODO: your code here
 
-        pass  # Replace with your solution
+            #   Step 2: Forward pass only — no backward, no optimizer step.
+            # TODO: get model outputs from the images
+            outputs = None # TODO: replace "None" and add your solution 
+            
+            #   Step 3: Compute loss (for logging, not for training).
+            loss = None # TODO: replace "None" and add your solution
 
+        
+        
         # --- Accumulate metrics (do not modify) ---
         batch_size = images.size(0)
         running_loss += loss.item() * batch_size
@@ -125,58 +138,90 @@ def validate(model, dataloader, criterion, device):
 def main(config_path):
     """Main training function."""
 
+    # --- Load config ---
     config = load_config(config_path)
     print(f"Loaded config from: {config_path}")
 
+     # --- Setup ---
     set_seed(config["seed"])
     device = torch.device(config["device"] if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # TODO: Create the TensorBoard SummaryWriter. (Hint: https://docs.pytorch.org/docs/2.14/tensorboard.html)
+    # Create the TensorBoard SummaryWriter. (see https://docs.pytorch.org/docs/2.14/tensorboard.html)
     #   The log directory should include the experiment name so each
     #   experiment gets its own subfolder. Combine config["logging"]["log_dir"]
     #   and config["experiment_name"] using os.path.join().
-    log_dir = None
+    log_dir = os.path.join(config["logging"]["log_dir"], config["experiment_name"])
     writer = SummaryWriter(log_dir=log_dir)
 
     image_size = config["data"]["image_size"]
     augmentation = config["data"]["augmentation"]
 
-    # TODO: Create training and validation datasets.
+    # Create training and validation datasets.
     #   Use PlantWildDataset with the appropriate root_dir
     #   (os.path.join with "train" or "val") and transforms.
     # Check the config file for specific keywords related to root directory and datasets
-    train_dataset = None
-    val_dataset = None
+    train_dataset = PlantWildDataset(
+        root_dir=os.path.join(config["data"]["root_dir"], "train"),
+        transform=get_train_transforms(image_size, augmentation),
+    )
 
-    # TODO: Create DataLoaders for both datasets.
+    # TODO: get the validation dataset, similar to train dataset, use the correct transforms!
+    val_dataset = None # TODO: remove "None" and add your solution here
+
+
+    # Create DataLoaders for both datasets.
     #   Use batch_size and num_workers from config["data"].
     #   Training: shuffle=True. Validation: shuffle=False.
-    train_loader = None
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=config["data"]["batch_size"],
+        shuffle=True,
+        num_workers=config["data"]["num_workers"],
+    )
+    # TODO: create the validation dataloader, similar to train loader, use the val_dataset instead of train_dataset
+    #       everything else stays the same
     val_loader = None
+
 
     print(f"Train samples: {len(train_dataset)} | Val samples: {len(val_dataset)}")
     print(f"Classes: {train_dataset.classes}")
 
-    # TODO: Instantiate the model.
+    # Instantiate the model.
     #   Use PlantCNN with num_classes and dropout from config.
     #   Move to device.
-    model = None
+    model = PlantCNN(
+        num_classes=config["model"]["num_classes"],
+        dropout=config["model"]["dropout"],
+    ).to(device)
+    
 
     print(f"Model parameters: {count_parameters(model):,}")
 
-    # TODO: Define the loss function — nn.CrossEntropyLoss().
-    criterion = None
+    # Define the loss function — nn.CrossEntropyLoss().
+    criterion = nn.CrossEntropyLoss()
 
-    # TODO: Define the optimizer based on config["training"]["optimizer"].
+    # Define the optimizer based on config["training"]["optimizer"].
     #   If "adam", use torch.optim.Adam.
     #   If "sgd", use torch.optim.SGD with momentum=0.9.
     #   Pass learning_rate and weight_decay from config.
-    optimizer = None
+    if config["training"]["optimizer"] == "adam":
+        optimizer = torch.optim.Adam(
+            model.parameters(),
+            lr=config["training"]["learning_rate"],
+            weight_decay=config["training"]["weight_decay"],
+        )
+    else:
+        # TODO: Instantiate a torch.optim.SGD() optimizer with the same config values
+        #       SGD additionally has a parameter "momentum", set it to momentum=0.9
+        pass # TODO: remove "pass" and fill in your solution here
+        )
 
-    # TODO: Log sample images to TensorBoard for visual verification.
+    # Log sample images to TensorBoard for visual verification.
     #   Fetch one batch from train_loader using next(iter(...)).
     #   Log images using writer.add_images("sample_training_images", images, 0).
+    sample_images, _ = next(iter(train_loader))
+    writer.add_images("sample_training_images", sample_images, global_step=0)
 
 
     # --- Training Loop ---
@@ -186,28 +231,44 @@ def main(config_path):
     for epoch in range(1, num_epochs + 1):
         print(f"\nEpoch [{epoch}/{num_epochs}]")
 
+        # Train the model for one epoch
         train_loss, train_acc = train_one_epoch(
             model, train_loader, criterion, optimizer, device,
             log_interval=config["logging"]["log_interval"],
         )
 
+        # Validate
         val_loss, val_acc = validate(model, val_loader, criterion, device)
 
         print(f"  Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.4f}")
         print(f"  Val   Loss: {val_loss:.4f} | Val   Acc: {val_acc:.4f}")
 
-        # TODO: Log four scalar metrics to TensorBoard using writer.add_scalar():
+        # --- Logging ---
+        # Log four scalar metrics to TensorBoard using writer.add_scalar():
         #   "Loss/train", "Loss/val", "Accuracy/train", "Accuracy/val"
         #   Use epoch as the global_step.
+        writer.add_scalar("Loss/train", train_loss, epoch)
+        writer.add_scalar("Loss/val", val_loss, epoch)
+        writer.add_scalar("Accuracy/train", train_acc, epoch)
+        writer.add_scalar("Accuracy/val", val_acc, epoch)
 
-
-        # TODO: Save checkpoint if validation accuracy improved.
+        # --- Checkpointing ---
+        # Save checkpoint if validation accuracy improved.
         #   Compare val_acc with best_val_acc. If better, update best_val_acc
         #   and call save_checkpoint(). Save to the path built from
         #   config["checkpoint"]["save_dir"] and experiment_name + "_best.pt".
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            ckpt_path = os.path.join(
+                config["checkpoint"]["save_dir"],
+                config["experiment_name"] + "_best.pt",
+            )
+            save_checkpoint(model, optimizer, epoch, val_acc, ckpt_path)
+            print(f"  ✓ Saved best checkpoint (val_acc={val_acc:.4f}) → {ckpt_path}")
 
 
-    # TODO: Close the TensorBoard writer.
+    # Close the TensorBoard writer.
+    writer.close()
 
     print(f"\nTraining complete. Best val accuracy: {best_val_acc:.4f}")
 
