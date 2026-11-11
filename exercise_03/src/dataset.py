@@ -84,12 +84,18 @@ class PlantWildDataset(Dataset):
         # TODO: Load one image and return it with its label.
         #
         #   Step 1: Get the file path and label from self.samples[idx].
+        img_path, label = self.samples[idx]
         #   Step 2: Open the image with PIL and convert to "RGB".
         #            hint: image = Image.open(img_path).convert("RGB")
         #           Some images may be grayscale or RGBA — converting
         #           to RGB ensures a consistent 3-channel input.
+        image = Image.open(img_path).convert("RGB")
+
         #   Step 3: Apply self.transform() if it is not None.
+        if self.transform is not None:
+            image = self.transform(image)
         #   Step 4: Return (image, label).
+        return image, label
         pass
 
 
