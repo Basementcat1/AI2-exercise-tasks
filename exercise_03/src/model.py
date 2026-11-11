@@ -56,6 +56,10 @@ class PlantCNN(nn.Module):
             # Create the last Block similar to the first two blocks.
             # Go from 64 input channels to 128 output channels.
             # kernel_size=3 and padding=1 stay the same
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
 
         )
 
@@ -95,7 +99,8 @@ class PlantCNN(nn.Module):
         x = x.view(x.size(0), -1)
 
         # TODO: finally, pass x through the self.classifier
-        x = None # TODO: remove "None" and add your code here
+        #x = None # TODO: remove "None" and add your code here
+        x = self.classifier(x)
 
         # return x as final output
         return x
