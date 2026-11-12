@@ -51,30 +51,29 @@ def train_one_epoch(model, dataloader, criterion, optimizer, device, log_interva
     total_samples = 0
 
     for batch_idx, (images, labels) in enumerate(dataloader):
-        # TODO: Complete the training step by filling in the individual TODOs.
-        #
-        #   Step 1: Move images and labels to the device using .to(device).
-            images = images.to(device)
-            labels = labels.to(device)
+    # TODO: Complete the training step by filling in the individual TODOs.
+    #
+    #   Step 1: Move images and labels to the device using .to(device).
+        images = images.to(device)
+        labels = labels.to(device)
     
-        #   Step 2: Clear old gradients from the optimizer (hint: .zero_grad()).
-            # TODO: your code here - clear gradients
-            optimizer.zero_grad()
+    #   Step 2: Clear old gradients from the optimizer (hint: .zero_grad()).
+        # TODO: your code here - clear gradients
+    
+    #   Step 3: Forward pass — get model outputs from the images.
+        outputs = model(images)
 
-        #   Step 3: Forward pass — get model outputs from the images.
-            outputs = model(images)
+    #   Step 4: Compute the loss using the criterion (hint: criterion(outputs, labels)).
+    #           Pass (outputs, labels) — not (labels, outputs).
+        loss = criterion(outputs, labels)
 
-        #   Step 4: Compute the loss using the criterion (hint: criterion(outputs, labels)).
-        #           Pass (outputs, labels) — not (labels, outputs).
-            loss = criterion(outputs, labels)
+    #   Step 5: Backward pass — compute gradients from the loss (hint: .backward()).
+        # TODO: your code here - backward pass
+        loss.backward()
 
-        #   Step 5: Backward pass — compute gradients from the loss (hint: .backward()).
-            # TODO: your code here - backward pass
-            loss.backward()
-
-        #   Step 6: Update weights with the optimizer (hint: .step()).
-            # TODO: your code here - optimizer step
-            optimizer.step()
+    #   Step 6: Update weights with the optimizer (hint: .step()).
+        # TODO: your code here - optimizer step
+        optimizer.step()
 
     
         # --- Accumulate metrics (do not modify) ---
@@ -130,11 +129,11 @@ def validate(model, dataloader, criterion, device):
             loss = criterion(outputs, labels)
         
         
-        # --- Accumulate metrics (do not modify) ---
-        batch_size = images.size(0)
-        running_loss += loss.item() * batch_size
-        running_correct += (outputs.argmax(dim=1) == labels).sum().item()
-        total_samples += batch_size
+            # --- Accumulate metrics (do not modify) ---
+            batch_size = images.size(0)
+            running_loss += loss.item() * batch_size
+            running_correct += (outputs.argmax(dim=1) == labels).sum().item()
+            total_samples += batch_size
 
     epoch_loss = running_loss / total_samples
     epoch_acc = running_correct / total_samples
