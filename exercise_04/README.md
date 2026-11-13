@@ -46,7 +46,7 @@ exercise_04/
 Same as Exercise 03. If you have not already created the symlink:
 
 ```bash
-ln -s /ai2_ex/data/classification/plantwild_subset data/plantwild
+ln -s /data/plantwild data/plantwild
 ```
 
 ---
