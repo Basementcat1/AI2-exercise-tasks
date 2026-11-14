@@ -47,7 +47,7 @@ print(x.grad.item())
 # Step 3: Compare your manual result with x.grad from Task 1.
 #         Do they match?
 #
-# Answer: yes, it matches
+# Answer: yes, they match
 
 # ===========================================================================
 # Task 3: Second Function — Full Verification (Homework)
