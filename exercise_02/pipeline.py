@@ -20,58 +20,93 @@ from dataset import SimpleImageDataset
 
 
 # ===========================================================================
-# Task 1: Wire the Full Pipeline
+# Task 1: Wire the Full Pipeline (Homework)
 # ===========================================================================
 
 # Step 1: Set device
 # Determine whether CUDA is available. Create a torch.device that is
 # 'cuda' if a GPU exists, otherwise 'cpu'. Print which device you're using.
-device = None
+#device = None
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+print("Task 1:")
+print(f"Using device: {device}")
 
 # Step 2: Create dataset and dataloader
 # Instantiate SimpleImageDataset with root_dir='sample_images/'.
+
 # Apply a transform pipeline: Resize(32,32) → ToTensor() → Normalize().
+transform = transforms.Compose([
+    transforms.Resize((32, 32)),
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean = [0.485, 0.456, 0.406],
+        std = [0.229, 0.224, 0.225],
+    ),
+])
+
+#dataset = None
+dataset = SimpleImageDataset(root_dir = "sample_images/", transform = transform)
+
 # Create a DataLoader with batch_size=2, shuffle=True, num_workers=0.
-dataset = None
-dataloader = None
+#dataloader = None
+dataloader = DataLoader(dataset, batch_size = 2, shuffle = True, num_workers = 0)
 
 # Step 3: Instantiate the model
 # Create TinyNet. The num_classes should match the number of classes
 # in your dataset — use len(dataset.classes) to get this automatically.
 # Move the model to the device from Step 1 using .to(device).
-model = None
+#model = None
+model = TinyNet(num_classes = len(dataset.classes)).to(device)
 
 # Step 4: Define loss function and optimizer
 # Use nn.CrossEntropyLoss() as the loss function.
 # Use torch.optim.Adam() with lr=0.001 as the optimizer.
 # Pass model.parameters() to the optimizer.
-criterion = None # this is the loss function
-optimizer = None
+#criterion = None # this is the loss function
+criterion = nn.CrossEntropyLoss()
+#optimizer = None
+optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
 
 # Step 5: Fetch one batch
 # Get one batch of (images, labels) from the dataloader.
 # Move both to the device. Tensors are moved with .to(device).
-images, labels = None , None
+#images, labels = None , None
+images, labels = next(iter(dataloader))
+images = images.to(device)
+labels = labels.to(device)
 
 # Step 6: Forward pass
 # Pass the images through the model to get output logits.
 # Print the output shape — should be [batch_size, num_classes].
-outputs = None
+#outputs = None
+outputs = model(images)
+print("\nTask 6:")
+print(f"Outputs shape: {outputs.shape}")
 
 # Step 7: Compute loss
 # Pass (outputs, labels) to the loss function.
 # Print the loss value.
-loss = None
+#loss = None
+loss = criterion(outputs, labels)
+print(f"\nLoss: {loss.item():.4f}")
 
 # Step 8: Backward pass and optimizer step
 # Three calls in order: zero gradients, compute gradients, update weights.
-
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
 
 # Step 9: Print predictions
 # Get predicted class indices using .argmax(dim=1) on the outputs.
 # Print predicted classes and actual labels side by side.
 # They will likely not match — the model is untrained.
-predictions = None
+#predictions = None
+predictions = outputs.argmax(dim = 1)
+print("\nTask 9:")
+print(f"Predicted classes: {predictions}")
+print(f"Actual labels:     {labels}")
+
 
 # ===========================================================================
 # Verification
