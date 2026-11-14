@@ -22,7 +22,7 @@ from torchvision import transforms
 SAMPLE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "exercise_02", "sample_images")
 
 # ===========================================================================
-# Task 1: Define a Transform Pipeline
+# Task 1: Define a Transform Pipeline (Homework)
 # ===========================================================================
 # Create a transforms.Compose() pipeline with three steps:
 #   1. Resize images to (32, 32)
@@ -31,11 +31,18 @@ SAMPLE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "exe
 #      and std=[0.229, 0.224, 0.225]
 #
 # Store the result in a variable called 'transform'.
-transform = None
-
+#transform = None
+transform = transforms.Compose([
+    transforms.Resize((32, 32)),
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean = [0.485, 0.456, 0.406],
+        std = [0.229, 0.224, 0.225]
+        ),
+    ])
 
 # ===========================================================================
-# Task 2: Build a Custom Dataset
+# Task 2: Build a Custom Dataset (Homework)
 # ===========================================================================
 # Define a class SimpleImageDataset that subclasses torch.utils.data.Dataset.
 class SimpleImageDataset(Dataset):
@@ -52,52 +59,84 @@ class SimpleImageDataset(Dataset):
         #   Step 1: Create a mapping from class name to integer index.
         #           e.g. {"class_a": 0, "class_b": 1} (Hint: Use .enumerate() to get the index)
         #           Store as self.class_to_idx.
-        self.class_to_idx = None
+        #self.class_to_idx = None
+        self.class_to_idx = {cls_name: idx for idx, cls_name in enumerate(self.classes)} # enumerate() takes a list and returns two values on each iteration: the index (i. e. the position of the element) and the element itself
+
         #   Step 2: Build a list of (file_path, label) tuples.
         #           Loop over each class folder, then over each file inside it.
         #           Store the full path and the integer label.
         #           Store as self.samples.
-        self.samples = None
+        #self.samples = None
+        self.samples = []
+        for cls_name in self.classes:
+            cls_dir = os.path.join(root_dir, cls_name)
+            label = self.class_to_idx[cls_name]
+            for fname in sorted(os.listdir(cls_dir)):
+                filepath = os.path.join(cls_dir, fname)
+                if os.path.isfile(filepath):
+                    self.samples.append((filepath, label))
 
     def __len__(self):
         #   Return the total number of samples.
-        pass
+        #pass
+        return len(self.samples)
 
     def __getitem__(self, idx):
         #   Step 1: Get the file path and label from self.samples[idx].
         #   Step 2: Open the image with PIL and convert to "RGB".
         #   Step 3: Apply self.transform if it is not None.
         #   Step 4: Return (image, label).
-        pass
+        #pass
+        img_path, label = self.samples[idx]
+        image = Image.open(img_path).convert("RGB")
+        if self.transform:
+            image = self.transform(image)
+        return image, label
 
 if __name__ == "__main__":
     # ===========================================================================
-    # Task 3: Create a DataLoader
+    # Task 3: Create a DataLoader (Homework)
     # ===========================================================================
     # Step 1: Instantiate SimpleImageDataset with SAMPLE_DIR
     #         and the transform from Task 1.
-    dataset = None
-    dataloader = None
+    #dataset = None
+    dataset = SimpleImageDataset(SAMPLE_DIR, transform = transform)
     #
     # Step 2: Print len(dataset) and dataset.classes.
+    print("Task 3:")
+    print(f"Total samples: {len(dataset)}")
+    print(f"Classes: {dataset.classes}")
     #
     # Step 3: Create a DataLoader with batch_size=2, shuffle=True, num_workers=0.
+    #dataloader = None
+    dataloader = DataLoader(dataset, batch_size = 2, shuffle = True, num_workers = 0)
     #
     # Step 4: Fetch one batch using next(iter(dataloader)).
     #         Print the image tensor shape and the labels.
-    
+    images, labels = next(iter(dataloader))
+    print(f"Batch shape: {images.shape}")
+    print(f"Batch labels: {labels}")
     
     # ===========================================================================
-    # Task 4: Inspect a Single Sample
+    # Task 4: Inspect a Single Sample (Homework)
     # ===========================================================================
     # Step 1: Access the first sample directly: image, label = dataset[0]
+    image, label = dataset[0]
     #
     # Step 2: Print the image tensor shape, its min and max pixel values,
     #         and the label.
+    print("\nTask 4:")
+    print(f"Image shape: {image.shape}")
+    print(f"Min pixel value: {image.min().item():.4f}")
+    print(f"Max pixel value: {image.max().item():.4f}")
+    print(f"Label: {label}")
     #
     # Step 3: The pixel values are no longer in [0, 1]. Why?
     #         Write your answer as a comment.
     #         Hint: think about what Normalize() does.
+    # Normalize() subtracts the mean and devides by the std, shifting the range. 
+    # For example, a pixel at 0.0 becomes (0.0 - 0.485) / 0.229 = -2.118. This is 
+    # expected and required für models pretrained on ImageNet-normalized data.
     
     
     # ===========================================================================
