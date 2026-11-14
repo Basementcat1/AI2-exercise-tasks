@@ -106,10 +106,10 @@ print(f"image2_back shape: {image2_back.shape}")
 # else gets flattened into one dimension. You can pass -1 to let
 # PyTorch infer the flattened size automatically.
 print("\nTask 6:")
-batch3 = torch.randn(4, 16, 8, 8)
-batch3_flattened = batch3.view(4, 1024)
-print(f"batch3 shape: {batch3.shape}")
-print(f"batch3_flattened shape: {batch3_flattened.shape}")
+feature_maps = torch.randn(4, 16, 8, 8)
+feature_maps_flattened = feature_maps.view(4, 1024)
+print(f"feature_maps shape: {feature_maps.shape}")
+print(f"feature_maps_flattened shape: {feature_maps_flattened.shape}")
 
 # ===========================================================================
 # Task 7: Basic Math (Homework)
@@ -133,5 +133,5 @@ print(f"matrix_product: {matrix_product}")
 print("\nTask 7b")
 batch4 = torch.randn(4, 3, 32, 32)
 mean_batch4 = batch4.mean(dim = 0)
-print(f"batch4 shape {batch4.shape}")
+print(f"batch4 shape: {batch4.shape}")
 print(f"mean_batch4 shape: {mean_batch4.shape}")
