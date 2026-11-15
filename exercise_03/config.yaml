@@ -9,7 +9,7 @@
 # ============================================================================
 
 # --- Experiment ---
-experiment_name: "plantwild_baseline"
+experiment_name: "plantwild_baseline_no_augmentation"
 seed: 42
 
 # --- Data ---
@@ -18,7 +18,7 @@ data:
   image_size: 128
   batch_size: 32
   num_workers: 4
-  augmentation: true         # set to false to compare training without augmentation
+  augmentation: false         # set to false to compare training without augmentation
 
 # --- Model ---
 model:
