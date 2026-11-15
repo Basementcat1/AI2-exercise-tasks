@@ -5,6 +5,12 @@ __pycache__/
 # Datasets (will be symlinked in later exercises)
 data/
 
+# Checkpoints
+outputs/checkpoints/
+
+# Logs
+outputs/logs/
+
 # Model checkpoints
 *.pth
 *.pt
