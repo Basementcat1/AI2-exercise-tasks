@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------------
+Zeichencodierung auf UTF-8 umstellen (in Git Bash):
+export PYTHONIOENCODING=utf-8
+
+---------------------------------------------------------------------------------
+Modelltraining:
+python -u src/train.py --config config.yaml 2>&1 | tee outputs/logs/training4.log
+
+---------------------------------------------------------------------------------
+TensorBoard öffnen:
+tensorboard --logdir outputs/logs --port 6006
+
+oder direkt im Browser öffnen:
+http://localhost:6006
+
+
+---------------------------------------------------------------------------------
+Modellevaluation (standardmäßig mit Testdatensatz):
+python src/evaluate.py --config config.yaml \
+    --checkpoint outputs/checkpoints/plantwild_baseline_best.pt
+
+python src/evaluate.py --config config.yaml --checkpoint outputs/checkpoints/plantwild_baseline_best.pt 2>&1 | tee outputs/logs/eval_results1.log
+
+bzw. mit Validierungsdatensatz:
+python src/evaluate.py --config config.yaml \
+    --checkpoint outputs/checkpoints/plantwild_baseline_best.pt \
+    --split val
+
+python src/evaluate.py --config config.yaml --checkpoint outputs/checkpoints/plantwild_baseline_best.pt --split val 2>&1 | tee outputs/logs/eval_results2.log
