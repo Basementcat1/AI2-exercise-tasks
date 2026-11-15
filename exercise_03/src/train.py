@@ -59,6 +59,7 @@ def train_one_epoch(model, dataloader, criterion, optimizer, device, log_interva
     
     #   Step 2: Clear old gradients from the optimizer (hint: .zero_grad()).
         # TODO: your code here - clear gradients
+        optimizer.zero_grad()
     
     #   Step 3: Forward pass — get model outputs from the images.
         outputs = model(images)
@@ -229,7 +230,7 @@ def main(config_path):
         # TODO: Instantiate a torch.optim.SGD() optimizer with the same config values
         #       SGD additionally has a parameter "momentum", set it to momentum=0.9
         #pass # TODO: remove "pass" and fill in your solution here
-        optimizer = torch.optim.Adam(
+        optimizer = torch.optim.SGD(
             model.parameters(),
             lr=config["training"]["learning_rate"],
             weight_decay=config["training"]["weight_decay"],
