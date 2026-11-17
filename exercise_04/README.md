@@ -242,17 +242,18 @@ cat outputs/logs/slurm_*.err
 ### Exercise D — Analyze results (section 7)
  
 After optimization completes, check:
-- Terminal output for the best trial's hyperparameters and accuracy.
+- slurm_*.out file for the best trial's hyperparameters and accuracy.
 - Saved plots in `outputs/optuna/`:
   - `optimization_history.png` — objective value over trials.
   - `param_importances.png` — which hyperparameters mattered most.
   - `param_relationships.png` — parallel coordinate view.
----
+
  
 Now, train with `plantcnn` using the best hyperparameters from the Optuna search by adapting the values inside the config file.
 ```bash
 sbatch submit_slurm.sh 
 ```
+---
 
 ### Exercise E — Try pretrained models (section 6)
 
