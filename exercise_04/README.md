@@ -249,14 +249,15 @@ After optimization completes, check:
   - `param_relationships.png` — parallel coordinate view.
 ---
  
-### Exercise E — Try pretrained models (section 6)
- 
-1. Train with `plantcnn` using the best hyperparameters from the Optuna search by adapting the values inside the config file.
+Now, train with `plantcnn` using the best hyperparameters from the Optuna search by adapting the values inside the config file.
 ```bash
-sbatch submit_slurm_optuna.sh
+sbatch submit_slurm.sh 
 ```
-2. Switch `model.name` to `resnet18` in `config.yaml` and train again. Make sure to rename the exeriment name to avoid overwriting the previous results. Optional: try `resnet50`, `vgg16`, or `alexnet` as well. Submit the new job.
-3. Compare results in TensorBoard.
+
+### Exercise E — Try pretrained models (section 6)
+
+1. Switch `model.name` to `resnet18` in `config.yaml` and train again. Make sure to rename the exeriment name to avoid overwriting the previous results. Optional: try `resnet50`, `vgg16`, or `alexnet` as well. Submit the new job.
+2. Compare results in TensorBoard.
 ---
 
 ### Exercise F — Evaluate on test set
