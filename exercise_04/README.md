@@ -251,7 +251,7 @@ After optimization completes, check:
  
 Now, train with `plantcnn` using the best hyperparameters from the Optuna search by adapting the values inside the config file.
 ```bash
-sbatch submit_slurm.sh 
+sbatch submit_slurm_train.sh 
 ```
 ---
 
