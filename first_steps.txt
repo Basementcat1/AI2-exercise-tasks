@@ -1,3 +1,6 @@
 cd AI2-exercise-tasks/exercise_03
 git status
 conda activate course_env
+
+git fetch upstream
+git merge upstream/main
