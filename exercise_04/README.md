@@ -46,7 +46,7 @@ exercise_04/
 Same as Exercise 03. If you have not already created the symlink:
 
 ```bash
-ln -s /ai2_ex/data/classification/plantwild_subset data/plantwild
+ln -s /data/plantwild data/plantwild
 ```
 
 ---
@@ -242,21 +242,23 @@ cat outputs/logs/slurm_*.err
 ### Exercise D — Analyze results (section 7)
  
 After optimization completes, check:
-- Terminal output for the best trial's hyperparameters and accuracy.
+- slurm_*.out file for the best trial's hyperparameters and accuracy.
 - Saved plots in `outputs/optuna/`:
   - `optimization_history.png` — objective value over trials.
   - `param_importances.png` — which hyperparameters mattered most.
   - `param_relationships.png` — parallel coordinate view.
----
+
  
-### Exercise E — Try pretrained models (section 6)
- 
-1. Train with `plantcnn` using the best hyperparameters from the Optuna search by adapting the values inside the config file.
+Now, train with `plantcnn` using the best hyperparameters from the Optuna search by adapting the values inside the config file.
 ```bash
-sbatch submit_slurm_optuna.sh
+sbatch submit_slurm.sh 
 ```
-2. Switch `model.name` to `resnet18` in `config.yaml` and train again. Make sure to rename the exeriment name to avoid overwriting the previous results. Optional: try `resnet50`, `vgg16`, or `alexnet` as well. Submit the new job.
-3. Compare results in TensorBoard.
+---
+
+### Exercise E — Try pretrained models (section 6)
+
+1. Switch `model.name` to `resnet18` in `config.yaml` and train again. Make sure to rename the exeriment name to avoid overwriting the previous results. Optional: try `resnet50`, `vgg16`, or `alexnet` as well. Submit the new job.
+2. Compare results in TensorBoard.
 ---
 
 ### Exercise F — Evaluate on test set
